@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cheapest Gas</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 90%;
+        margin: 0;
+        padding: 3%;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #origin-input,
+      #destination-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 200px;
+      }
+
+      #origin-input:focus,
+      #destination-input:focus {
+        border-color: #4d90fe;
+      }
+    /*Here Edited*/    
+      #right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+
+      #right-panel select, #right-panel input {
+        font-size: 15px;
+      }
+
+      #right-panel select {
+        width: 100%;
+      }
+
+      #right-panel i {
+        font-size: 12px;
+      }
+      #right-panel {
+        height: 100%;
+        float: right;
+        width: 390px;
+        overflow: auto;
+      }
+      .button {
+      border-radius: 8px;
+      background-color: #008CBA;
+      border: none;
+      color: white;
+      padding: 10px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 15px;
+      margin: 4px 2px;
+      cursor: pointer;
+      }
+      .button:hover {background-color: #008CBA}
+      .button:active {
+       background-color: #008CBA;
+       box-shadow: 0 5px #666;
+       transform: translateY(4px);
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+  	Avoids: <input type="checkbox" onclick="updateRoute()" id="fCheck"> Ferries
+  	<input type="checkbox" onclick="updateRoute()" id="hCheck"> Highways
+  	<input type="checkbox" onclick="updateRoute()" id="tCheck"> Tolls <br>
+    Fuel Type:
+    <input type="radio" onclick="updateType()" name="fuel" value="reg" checked> Reg
+    <input type="radio" onclick="updateType()" name="fuel" value="mid"> Mid
+    <input type="radio" onclick="updateType()" name="fuel" value="pre"> Pre
+    <input type="radio" onclick="updateType()" name="fuel" value="diesel"> Diesel
+    <input id="radius" class="controls" type="text" placeholder="Enter radius max 50 mile">
+    <input id="gas-station" class="button" type="button" value="Cheapest Gas Station">
+    <div id="right-panel"><img src="tenor.gif" id="img" style="display:none"/ ></div> 
+    <div id="map"></div>
+    <script>
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+      var map,infoWindow,directionsDisplay,directionsService,pos,fuelType="reg",dest,geo,cost,dMarker=null;
+      function initMap() {
+        directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsService = new google.maps.DirectionsService;
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 43.2994, lng: 74.2179},
+          zoom: 6
+        });
+        infoWindow = new google.maps.InfoWindow;
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            //alert(pos.lat+" "+pos.lng);
+            map.setCenter(pos);
+            map.setZoom(17);
+            new AutocompleteDirectionsHandler(map);
+            directionsDisplay.setMap(map);
+        	  directionsDisplay.setPanel(document.getElementById('right-panel'));
+            document.getElementById("gas-station").addEventListener("click", function(){
+            document.getElementById('right-panel').innerHTML = '<div><img src="tenor.gif" id="img" style="display:none"></div>';
+            $('#img').show();
+            var rad=document.getElementById('radius').value
+            if(rad>50){
+              alert("Error : Radius above limit of 50 miles \nEnter radius within 50 miles");
+              $('#img').hide();
+            }
+            else if(isNaN(rad)){
+              alert("Error : Please Enter a number");
+              $('#img').hide();
+            }
+            else{
+              var call=serverCall();
+              call.then(function(r){
+                dest=r.address;
+                geo=r.geoLocation;
+                cost=r.price;
+                //alert(dest);
+                if(dest==null){
+                  alert("Error : No Gas Station Found in the given Radius\nTry entering a larger number");
+                  //geo=pos;
+                  calculateAndDisplayRoute(directionsService,directionsDisplay);
+                }
+                else{
+                  calculateAndDisplayRoute(directionsService, directionsDisplay);
+                  displayCost();
+                }
+                $('#img').hide();
+              });
+            }
+            });
+            var marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: 'Your Location'
+          });
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+      }
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+      }
+      function serverCall(){
+        return new Promise(function(resolve,reject){
+          $(document).ready(function(){
+            $.post("/gas-station",
+                {origin: pos,fuel:fuelType,radius:$('#radius').val()},
+                function(data,status){
+                    if(status=='success'){
+                      resolve(data);
+                    }
+                    else{
+                      reject(status);
+                    }/*dest=data.address;*/});
+                  });
+        });
+      }
+      function updateType(){
+        var radios=document.getElementsByTagName('input');
+            for (var i=0; i<radios.length;i++) {
+              if (radios[i].type==='radio'&&radios[i].checked){
+                fuelType=radios[i].value;
+                break;     
+              }
+            }
+      }
+      function updateRoute(){
+        calculateAndDisplayRoute(directionsService,directionsDisplay);
+      }
+      function displayCost(){
+        if(dMarker!=null){
+          dMarker.setMap(null);
+        }
+        infowindow = new google.maps.InfoWindow({
+            content: 'Cost at Gas Station : '+cost
+        });
+        dMarker = new google.maps.Marker({
+            position: geo,
+            map: map,
+            title: 'Your Destination'
+          });
+        infowindow.open(map, dMarker);
+        dMarker.addListener('click', function() {
+        infowindow.open(map, dMarker);
+      });
+      }
+      function AutocompleteDirectionsHandler(map){
+        this.map = map;
+        this.originPlaceId = null;
+        this.destinationPlaceId = null;
+        this.travelMode = 'DRIVING';
+        var rad = document.getElementById('radius');
+        var button = document.getElementById('gas-station');
+        this.directionsService = new google.maps.DirectionsService;
+        this.directionsDisplay = new google.maps.DirectionsRenderer;
+        this.directionsDisplay.setMap(map);
+        this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(rad);
+        this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(button);
+      }
+      function calculateAndDisplayRoute(directionsService, directionsDisplay){
+        var start = pos;
+        var end = geo;
+        //window.alert(end);
+        directionsService.route({
+          origin: start,
+          destination: end,
+          provideRouteAlternatives: true,
+          avoidFerries: document.getElementById("fCheck").checked,
+          avoidHighways: document.getElementById("hCheck").checked,
+          avoidTolls: document.getElementById("tCheck").checked,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('No Driving Directions found between '+start+' & '+end+' : ' + status);
+          }
+        });
+      }  
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSjmzkXbR-yUgs-un-8Q922ynfm0OVg_4&callback=initMap">
+    </script>
+  </body>
+</html>
