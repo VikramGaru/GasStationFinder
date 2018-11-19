@@ -2,7 +2,7 @@
 Gas station finder is a web application to find directions to the cheapest gas station within a given radius
 
 # Running/Testing the Application
-Since the application is not yet hosted on the web it will be running locally. Follow the steps to run or test the application.
+Since the application is not yet hosted on the web, it will be running locally. Follow the steps to run or test the application.
 
 ### Cloning the repository
 To clone the repository, run the following command from the terminal: $ git clone https://github.com/VikramGaru/GasStationFinder.git
