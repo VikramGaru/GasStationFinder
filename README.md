@@ -33,7 +33,7 @@ Ignore this step if you just want to run the application
 
 3) Install chai-http: $ npm install --save-dev chai-http
 
-4) Install chai-as-promised: npm install chai-as-promised
+4) Install chai-as-promised: $ npm install chai-as-promised
 
 5) Also set things up so that running npm test will run our tests with mocha. For this open the file package.json and edit the value of test:'some data' to the following test:'mocha'
 
