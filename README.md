@@ -11,8 +11,8 @@ Once you have the repository cloned: $ cd GasStationFinder/GasStation
 
 ### Setting up the development environment
 1) Check if you have npm already installed: $ npm -v
-  a) If not, please refer to https://nodejs.org/en
-  b) If you have it installed, you might want to update npm: $ npm install npm@latest -g
+  - If not, please refer to https://nodejs.org/en
+  - If you have it installed, you might want to update npm: $ npm install npm@latest -g
 
 2) Check if you have Node.js installed: $ node -v
 a. If not, please refer to https://nodejs.org/en
