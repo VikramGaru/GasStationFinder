@@ -35,7 +35,16 @@ Ignore this step if you just want to run the application
 
 4) Install chai-as-promised: $ npm install chai-as-promised
 
-5) Also set things up so that running npm test will run our tests with mocha. For this open the file package.json and edit the value of test:'some data' to the following test:'mocha'
+5) Also set things up so that running npm test will run our tests with mocha. For this open the file package.json and edit the value of: 
+"scripts": {
+    "test": "some data",
+    "start": "node server.js"
+  }
+To the following:
+"scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },]
 
 ### Running the app
 1) To run the application type the following command into your terminal: $ npm start
