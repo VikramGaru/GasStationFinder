@@ -23,7 +23,7 @@ Once you have the repository cloned: $ cd GasStationFinder
 
 5) Installing Google Maps Client: $ npm install @google/maps
 
-6) You should have a file named package.json. If you don't then run the following command which would create the file which will list all dependencies and some other matadata: $ npm init -y
+6) Run the following command which would create a file named package.json which will list all dependencies and some other matadata: $ npm init -y
 
 ### Setting up the testing environment
 Ignore this step if you just want to run the application
