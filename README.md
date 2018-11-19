@@ -44,7 +44,7 @@ To the following:
 "scripts": {
     "test": "mocha",
     "start": "node server.js"
-  },]
+  }
 
 ### Running the app
 1) To run the application type the following command into your terminal: $ npm start
