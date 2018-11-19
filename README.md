@@ -1,2 +1,4 @@
 # GasStationFinder
-Web application to find cheapest gas station within a given radius
+Gas station finder is a Web application to find directions to cheapest gas station within a given radius
+
+# Dependencies
