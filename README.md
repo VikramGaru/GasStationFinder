@@ -1,13 +1,13 @@
-# GasStationFinder
-Gas station finder is a Web application to find directions to cheapest gas station within a given radius
+# Gas Station Finder
+Gas station finder is a web application to find directions to the cheapest gas station within a given radius
 
 # Running/Testing the Application
-Since the application is not yet hosted on the web it has to be run locally. Follow the following steps to run or test the application.
+Since the application is not yet hosted on the web it will be running locally. Follow the steps to run or test the application.
 
 ### Cloning the repository
-To clone the repository run the following command from the terminal: $ git clone https://github.com/VikramGaru/GasStationFinder.git
+To clone the repository, run the following command from the terminal: $ git clone https://github.com/VikramGaru/GasStationFinder.git
 
-Once you have the repository cloned: $ cd GasStationFinder/GasStation
+Once you have the repository cloned: $ cd GasStationFinder
 
 ### Setting up the development environment
 1) Check if you have npm already installed: $ npm -v
@@ -23,7 +23,7 @@ Once you have the repository cloned: $ cd GasStationFinder/GasStation
 
 5) Installing Google Maps Client: $ npm install @google/maps
 
-6) You should have a file named package.json. If you don't then run the following command which would create the file which will list all dependencies and some other matadata: $ run npm init -y
+6) You should have a file named package.json. If you don't then run the following command which would create the file which will list all dependencies and some other matadata: $ npm init -y
 
 ### Setting up the testing environment
 Ignore this step if you just want to run the application
@@ -35,7 +35,7 @@ Ignore this step if you just want to run the application
 
 4) Install chai-as-promised: $ npm install chai-as-promised
 
-5) Also set things up so that running npm test will run our tests with mocha. For this open the file package.json and edit the value of: 
+5) Make a setup so that running npm test will run our tests with mocha. For this open the file package.json and edit the value of: 
 "scripts": {
     "test": "some data",
     "start": "node server.js"
@@ -52,8 +52,8 @@ To the following:
 2) Then open your browser and go to the following address: http://localhost:8080
 
 ### Writing/Running tests
-1) Tests are located in a directory called test. cd into the directory
+1) Tests are located in a directory called test. The directory has some predefined test cases, cd into the directory
 
-2) You can write your tests in the directory or include more cases in the testServer.js file
+2) You can write your tests in the directory or include more cases in the testServer.js file, after you are done writing tests use cd .. to get back to the root directory
 
 3) Run the following command from the terminal once you are done writing tests: $ npm test
